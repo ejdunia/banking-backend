@@ -3,6 +3,8 @@ import { Transaction } from './transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { IupdateTransactionStatusDto } from './interfaces/transaction.interface';
+import { log } from 'console';
 
 @Injectable()
 export class TransactionsService {
@@ -30,9 +32,11 @@ export class TransactionsService {
     return this.transactionRepository.save(transaction);
   }
 
-  updateTransaction(id: number) {
-    const update = this.transactionRepository.findOneBy({ id });
-    return update;
+  async updateTransaction(id: number, update: IupdateTransactionStatusDto) {
+    let transaction = await this.transactionRepository.findOneBy({ id });
+    // console.log(transaction);
+    transaction = { ...transaction, ...update };
+    return this.transactionRepository.save(transaction);
   }
 
   deleteTransaction(id: number) {
