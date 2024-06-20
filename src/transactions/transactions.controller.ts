@@ -29,10 +29,9 @@ export class TransactionsController {
   async updateTrx(
     @Param('id') id: string,
     @Body()
-    transactionUpdate: IupdateTransactionStatusDto,
+    update: IupdateTransactionStatusDto,
   ) {
-    console.log(transactionUpdate);
-    return await this.transactionService.updateTransaction(Number(id));
+    return await this.transactionService.updateTransaction(Number(id), update);
   }
 
   @Delete(':id')
