@@ -11,10 +11,12 @@ export enum TransactionStatus {
 }
 
 export interface ItransactionDto {
-  id: number;
   amount: number;
-  paymentMethod: PaymentMethod;
+  payment_method: PaymentMethod;
   status: TransactionStatus;
-  createdAt: string;
   updatedAt: string;
+}
+
+export interface IupdateTransactionStatusDto {
+  transaction_status: TransactionStatus;
 }

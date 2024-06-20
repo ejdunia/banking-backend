@@ -14,11 +14,8 @@ export class CreateTransactionDto implements ItransactionDto {
   updatedAt: string;
 
   @IsString()
-  createdAt: string;
-
-  @IsNumber()
-  id: number;
-
   status: TransactionStatus;
-  paymentMethod: PaymentMethod;
+
+  @IsString()
+  payment_method: PaymentMethod;
 }
