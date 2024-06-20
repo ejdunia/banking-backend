@@ -22,21 +22,21 @@ export class TransactionsService {
   createTransaction(
     createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
-    console.log(`creating user`);
+    console.log(`creating transaction`);
     const transaction = new Transaction();
     transaction.amount = createTransactionDto.amount;
-    transaction.PaymentMethod = createTransactionDto.paymentMethod;
-    transaction.TransactionStatus = createTransactionDto.status;
-
+    transaction.payment_method = createTransactionDto.payment_method;
+    transaction.transaction_status = createTransactionDto.status;
     return this.transactionRepository.save(transaction);
   }
+
+  updateTransaction(id: number) {
+    const update = this.transactionRepository.findOneBy({ id });
+    return update;
+  }
+
+  deleteTransaction(id: number) {
+    const trx = this.transactionRepository.findOneBy({ id });
+    console.log(trx);
+  }
 }
-// interface ItransactionDto {
-//   id: number;
-//   transactionRef: UUID;
-//   amount: number;
-//   paymentMethod: PaymentMethod;
-//   status: TransactionStatus;
-//   createdAt: string;
-//   updatedAt: string;
-// }

@@ -1,24 +1,42 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionsService } from './transactions.service';
+import { IupdateTransactionStatusDto } from './interfaces/transaction.interface';
 
 @Controller('transactions')
 export class TransactionsController {
   constructor(private transactionService: TransactionsService) {}
   @Get()
   getAllTrancactions() {
-    return `this returns all transactins`;
+    return `this returns all transactions`;
   }
 
   @Post()
-  createTransaction(@Body() transaction: CreateTransactionDto) {
-    // console.log(`This creates a transaction`);
-    // return { ...transaction };
+  async createTransaction(@Body() transaction: CreateTransactionDto) {
+    console.log(transaction);
     return this.transactionService.createTransaction(transaction);
   }
 
+  @Put(':id')
+  async updateTrx(
+    @Param('id') id: string,
+    @Body()
+    transactionUpdate: IupdateTransactionStatusDto,
+  ) {
+    console.log(transactionUpdate);
+    return await this.transactionService.updateTransaction(Number(id));
+  }
+
   @Delete(':id')
-  deleteTrx() {
-    return `this deletes a transaction`;
+  async deleteTrx(@Param('id') id: string) {
+    return this.transactionService.deleteTransaction(Number(id));
   }
 }

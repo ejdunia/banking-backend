@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Generated,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum PaymentMethod {
   CARD = 'card',
@@ -13,8 +20,12 @@ export enum TransactionStatus {
 }
 @Entity()
 export class Transaction {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  @Generated('uuid')
+  trx_ref: string;
 
   @Column()
   amount: number;
@@ -24,12 +35,18 @@ export class Transaction {
     enum: PaymentMethod,
     default: PaymentMethod.CARD,
   })
-  PaymentMethod: PaymentMethod;
+  payment_method: PaymentMethod;
 
   @Column({
     type: 'enum',
     enum: TransactionStatus,
     default: TransactionStatus.PENDING,
   })
-  TransactionStatus: TransactionStatus;
+  transaction_status: TransactionStatus;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
