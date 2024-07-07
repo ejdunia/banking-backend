@@ -31,7 +31,10 @@ export class TransactionsController {
     @Body()
     update: IupdateTransactionStatusDto,
   ) {
-    return await this.transactionService.updateTransaction(Number(id), update);
+    return await this.transactionService.updateTransactionStatus(
+      Number(id),
+      update,
+    );
   }
 
   @Delete(':id')

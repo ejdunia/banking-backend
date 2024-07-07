@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
@@ -12,8 +12,16 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  async findOneByEmaik(email: string): Promise<User | null> {
+    // return this.usersRepository.findOneBy({ id });
+    const user = this.usersRepository.findOneBy({ email });
+    if (user) {
+      return user;
+    }
+    throw new HttpException(
+      'user with this email not found',
+      HttpStatus.NOT_FOUND,
+    );
   }
 
   findAllUsers(): Promise<User[]> {
@@ -21,16 +29,10 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(userData: CreateUserDto): Promise<User> {
     console.log(`creating user`);
-    const user = new User();
-    user.first_name = createUserDto.first_name;
-    user.last_name = createUserDto.last_name;
-    user.email = createUserDto.email;
-    user.role = createUserDto.role;
-    user.sex = createUserDto.sex;
-
-    return this.usersRepository.save(user);
+    const newUser = this.usersRepository.create(userData);
+    return this.usersRepository.save(newUser);
   }
 
   async remove(id: string): Promise<void> {

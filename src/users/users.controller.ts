@@ -16,9 +16,9 @@ export class UsersController {
 
   @Get(':id')
   //   route parameters
-  getUser(@Param('id') id: number) {
-    console.log({ id });
-    return this.usersService.findOne(id);
+  getUser(@Param('email') email: string) {
+    // console.log({ id });
+    return this.usersService.findOneByEmaik(email);
   }
 
   @Post()
