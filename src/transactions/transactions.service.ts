@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Transaction } from './transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { IupdateTransactionStatusDto } from './interfaces/transaction.interface';
-import { log } from 'console';
 
 @Injectable()
 export class TransactionsService {
@@ -21,26 +20,39 @@ export class TransactionsService {
     return this.transactionRepository.find();
   }
 
-  createTransaction(
-    createTransactionDto: CreateTransactionDto,
+  async createTransaction(
+    transactionData: CreateTransactionDto,
   ): Promise<Transaction> {
     console.log(`creating transaction`);
-    const transaction = new Transaction();
-    transaction.amount = createTransactionDto.amount;
-    transaction.payment_method = createTransactionDto.payment_method;
-    transaction.transaction_status = createTransactionDto.status;
-    return this.transactionRepository.save(transaction);
+    const newTransaction = this.transactionRepository.create(transactionData);
+    return await this.transactionRepository.save(newTransaction);
   }
 
-  async updateTransaction(id: number, update: IupdateTransactionStatusDto) {
+  async updateTransactionStatus(
+    id: number,
+    update: IupdateTransactionStatusDto,
+  ) {
     let transaction = await this.transactionRepository.findOneBy({ id });
-    // console.log(transaction);
     transaction = { ...transaction, ...update };
-    return this.transactionRepository.save(transaction);
+    await this.transactionRepository.save(transaction);
+    return transaction;
+
+    // **IMPLEMENT THIS LATER**
+    // async updatePost(id: number, post: UpdatePostDto) {
+    //   await this.postsRepository.update(id, post);
+    //   const updatedPost = await this.postsRepository.findOne(id);
+    //   if (updatedPost) {
+    //     return updatedPost
+    //   }
+    //   throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+    // }
   }
 
-  deleteTransaction(id: number) {
-    const trx = this.transactionRepository.findOneBy({ id });
-    console.log(trx);
+  async deleteTransaction(id: number) {
+    const trxToDelete = await this.transactionRepository.delete({ id });
+    if (!trxToDelete) {
+      throw new HttpException('post not found', HttpStatus.NOT_FOUND);
+    }
+    console.log(trxToDelete);
   }
 }

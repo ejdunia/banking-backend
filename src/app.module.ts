@@ -3,10 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TransactionsModule } from './transactions/transactions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { DataSource } from 'typeorm';
 // import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
-// import { ConfigModule } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+// import Joi from 'joi';
+
 const typeOrmModule = TypeOrmModule.forRoot({
   type: 'postgres',
   host: 'localhost',
@@ -17,8 +18,14 @@ const typeOrmModule = TypeOrmModule.forRoot({
   synchronize: true,
   autoLoadEntities: true,
 });
+
 @Module({
-  imports: [typeOrmModule, TransactionsModule, UsersModule],
+  imports: [
+    typeOrmModule,
+    TransactionsModule,
+    UsersModule,
+    ConfigModule.forRoot(),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
