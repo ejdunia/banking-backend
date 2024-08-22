@@ -21,11 +21,11 @@ export class User {
   @Column()
   last_name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: false })
   email: string;
 
-  // @Column()
-  // date_of_birth: string;
+  @Column()
+  password: string;
 
   @Column({
     type: 'enum',

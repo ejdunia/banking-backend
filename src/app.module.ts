@@ -2,29 +2,20 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TransactionsModule } from './transactions/transactions.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-// import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { DatabaseModule } from './database/database.module';
 // import Joi from 'joi';
-
-const typeOrmModule = TypeOrmModule.forRoot({
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'Halcon9...',
-  database: 'tiqpay',
-  synchronize: true,
-  autoLoadEntities: true,
-});
 
 @Module({
   imports: [
-    typeOrmModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
     TransactionsModule,
     UsersModule,
-    ConfigModule.forRoot(),
+    AuthenticationModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
