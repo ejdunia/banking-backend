@@ -18,6 +18,7 @@ export class AuthenticationController {
   constructor(private readonly authService: AuthenticationService) {}
   @Post('register')
   async register(@Body() registrationData: CreateUserDto) {
+    console.log('using the auth register route');
     return this.authService.register(registrationData);
   }
   @HttpCode(200)
