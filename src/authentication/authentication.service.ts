@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';
 // import { ConfigService } from '@nestjs/config';
-
+//
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
@@ -15,16 +15,17 @@ export class AuthenticationService {
     private readonly configService: ConfigService,
   ) {}
   public async register(registrationData: CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(registrationData.password, 10);
+    const hashedPassword = await bcrypt.hash(
+      registrationData.password,
+      +process.env.BCRYPT_SALT_ROUNDS,
+    );
     try {
-      const createdUser = await this.usersService.create({
-        ...registrationData,
-        password: hashedPassword,
-      });
-      // console.log(createdUser);
+      const createdUser = await this.usersService.create(registrationData);
+      console.log(createdUser);
       createdUser.password = undefined;
       return createdUser;
     } catch (error) {
+      console.log(registrationData);
       // catch duplicate emails from being registered
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(
@@ -33,7 +34,7 @@ export class AuthenticationService {
         );
       }
       throw new HttpException(
-        'Something went wrong',
+        'Something went wrong in the auth service',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

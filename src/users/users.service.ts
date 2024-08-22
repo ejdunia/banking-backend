@@ -7,12 +7,13 @@ import { Repository } from 'typeorm';
 // import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './interfaces/user.interface';
+import PostgresErrorCode from 'src/database/postgresErrorCodes.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async findOne(id: number): Promise<User | null> {
@@ -34,16 +35,36 @@ export class UsersService {
       HttpStatus.NOT_FOUND,
     );
   }
-  findAllUsers(): Promise<User[]> {
+  async findAllUsers(): Promise<User[]> {
     // return `this returns all users`;
-    return this.usersRepository.find();
+    return await this.usersRepository.find();
   }
 
   async create(userData: CreateUserDto): Promise<User> {
+    const hashedPassword = await bcrypt.hash(
+      userData.password,
+      +process.env.BCRYPT_SALT_ROUNDS,
+    );
     console.log(`creating user`);
-    const newUser = await this.usersRepository.create(userData);
-    await this.usersRepository.save(newUser);
-    return newUser;
+    try {
+      const newUser = await this.usersRepository.create({
+        ...userData,
+        password: hashedPassword,
+      });
+      await this.usersRepository.save(newUser);
+      return newUser;
+    } catch (error) {
+      if (error?.code === PostgresErrorCode.UniqueViolation) {
+        throw new HttpException(
+          'User with that email already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        'Something went wrong #from the userservice ',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async updateUser(id, user: UpdateUserDto): Promise<User> {
