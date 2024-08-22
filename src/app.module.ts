@@ -15,7 +15,6 @@ import { DatabaseModule } from './database/database.module';
     TransactionsModule,
     UsersModule,
     AuthenticationModule,
-    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
