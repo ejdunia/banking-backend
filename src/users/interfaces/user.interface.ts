@@ -12,7 +12,16 @@ export interface IuserDto {
   first_name: string;
   last_name: string;
   email: string;
-  // date_of_birth: string;
   role: UserRole;
   sex: Sex;
+}
+
+export interface UpdateUserDto {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: UserRole;
+  sex: Sex;
+  password: string;
 }

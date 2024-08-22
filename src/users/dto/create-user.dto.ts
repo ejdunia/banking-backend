@@ -12,7 +12,7 @@ export class CreateUserDto implements IuserDto {
   email: string;
 
   @IsString()
-  date_of_birth: string;
+  password: string;
 
   @IsString()
   sex: Sex;

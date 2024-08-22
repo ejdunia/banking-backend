@@ -25,7 +25,8 @@ export class TransactionsService {
   ): Promise<Transaction> {
     console.log(`creating transaction`);
     const newTransaction = this.transactionRepository.create(transactionData);
-    return await this.transactionRepository.save(newTransaction);
+    await this.transactionRepository.save(newTransaction);
+    return newTransaction;
   }
 
   async updateTransactionStatus(
