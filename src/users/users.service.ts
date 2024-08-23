@@ -40,14 +40,14 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  async create(userData: CreateUserDto): Promise<User> {
+  public async create(userData: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(
       userData.password,
       +process.env.BCRYPT_SALT_ROUNDS,
     );
     console.log(`creating user`);
     try {
-      const newUser = await this.usersRepository.create({
+      const newUser = this.usersRepository.create({
         ...userData,
         password: hashedPassword,
       });
@@ -67,11 +67,10 @@ export class UsersService {
     }
   }
 
-  async updateUser(id, user: UpdateUserDto): Promise<User> {
-    const userToUpdate = this.usersRepository.findOneBy({ id });
-    console.log(userToUpdate);
-    // console.log(user);
-    return user;
+  async updateUser(id: number, user: UpdateUserDto): Promise<User> {
+    const userToUpdate = await this.usersRepository.findOneBy({ id });
+    console.log(user);
+    return userToUpdate;
   }
 
   // public async register(registrationData: CreateUserDto) {

@@ -6,6 +6,9 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
+import { Repository } from 'typeorm';
 // import { ConfigService } from '@nestjs/config';
 //
 export class AuthenticationService {
@@ -13,20 +16,30 @@ export class AuthenticationService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
-  public async register(registrationData: CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(
-      registrationData.password,
-      +process.env.BCRYPT_SALT_ROUNDS,
-    );
+
+  public async register(userData: CreateUserDto): Promise<any> {
+    // const hashedPassword = await bcrypt.hash(
+    //   userData.password,
+    //   +process.env.BCRYPT_SALT_ROUNDS,
+    // );
+    console.log(`creating user from auth`);
+    // try {
+    //   const newUser = this.usersRepository.create({
+    //     ...userData,
+    //     password: hashedPassword,
+    //   });
+    //   await this.usersRepository.save(newUser);
+    //   return newUser;
+    // }
     try {
-      const createdUser = await this.usersService.create(registrationData);
-      console.log(createdUser);
-      createdUser.password = undefined;
-      return createdUser;
+      await this.usersService.create(userData);
+      userData.password == undefined;
+      return userData;
     } catch (error) {
-      console.log(registrationData);
-      // catch duplicate emails from being registered
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(
           'User with that email already exists',
@@ -34,7 +47,7 @@ export class AuthenticationService {
         );
       }
       throw new HttpException(
-        'Something went wrong in the auth service',
+        'Something went wrong #from the userservice ',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
