@@ -45,7 +45,7 @@ export class UsersService {
       userData.password,
       +process.env.BCRYPT_SALT_ROUNDS,
     );
-    console.log(`creating user`);
+    // console.log(`creating user`);
     try {
       const newUser = this.usersRepository.create({
         ...userData,

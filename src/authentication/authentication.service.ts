@@ -27,6 +27,8 @@ export class AuthenticationService {
     //   +process.env.BCRYPT_SALT_ROUNDS,
     // );
     console.log(`creating user from auth`);
+    await this.usersService.create(userData);
+
     // try {
     //   const newUser = this.usersRepository.create({
     //     ...userData,
@@ -35,22 +37,22 @@ export class AuthenticationService {
     //   await this.usersRepository.save(newUser);
     //   return newUser;
     // }
-    try {
-      await this.usersService.create(userData);
-      userData.password == undefined;
-      return userData;
-    } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      throw new HttpException(
-        'Something went wrong #from the userservice ',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    // try {
+    //   await this.usersService.create(userData);
+    //   userData.password == undefined;
+    //   return userData;
+    // } catch (error) {
+    //   if (error?.code === PostgresErrorCode.UniqueViolation) {
+    //     throw new HttpException(
+    //       'User with that email already exists',
+    //       HttpStatus.BAD_REQUEST,
+    //     );
+    //   }
+    //   throw new HttpException(
+    //     'Something went wrong #from the userservice ',
+    //     HttpStatus.INTERNAL_SERVER_ERROR,
+    //   );
+    // }
   }
 
   private async verifyPassword(
