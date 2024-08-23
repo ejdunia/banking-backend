@@ -5,10 +5,13 @@ import { AuthenticationService } from './authentication.service';
 import { LocalStrategy } from './local.strategy';
 import { AuthenticationController } from './authentication.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
     UsersModule,
     PassportModule,
     ConfigModule,
@@ -23,7 +26,7 @@ import { JwtModule } from '@nestjs/jwt';
       }),
     }),
   ],
-  providers: [AuthenticationService, LocalStrategy],
+  providers: [AuthenticationService, JwtService, LocalStrategy],
   controllers: [AuthenticationController],
 })
 export class AuthenticationModule {}
